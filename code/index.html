@@ -1,0 +1,148 @@
+
+<html>
+<head>
+<meta http-equiv="charset" content="utf-8">
+<title>demo</title>
+<script src="http://y0.ifengimg.com/base/jQuery/jquery-1.9.1.min.js"></script>
+</head>  
+<body width ="500"  height="400">
+<style type="text/css">
+*{
+  margin: 0;
+  padding: 0;
+}
+  #demo{
+    /*position: relative;*/
+    width:300px;
+    height: 300px;
+  }
+  button{
+    top:600px;
+  }
+</style>
+<div id ="content">
+  
+    <canvas id="demo" width="600" height="600">
+    </canvas>
+    <button type="button" class="bt1">开始</button>
+    </div>
+<script type="text/javascript">
+  var startX ,startY,x,y,time_set1;
+  var r_length = 200;
+  var len_X = Math.sqrt(r_length*r_length/2);
+  /*var canvas = document.getElementById("demo");
+  var context = canvas.getContext("2d");  */
+    
+
+  function drawArc_first(color){
+    var canvas = document.getElementById("demo");
+    var context = canvas.getContext("2d");  
+
+    context.beginPath();  
+    context.strokeStyle = color;//"#ff0000";
+    context.arc(r_length,r_length,r_length,0,2*Math.PI);
+    context.stroke();
+    context.closePath();    
+  }
+  //画最开始的圆
+  (function (){ 
+    drawArc_first('#000000');
+    $(".bt1").on("click",function(){
+      $(".bt1").hide();     
+        time_set1 = setTimeout("clearPics2()",500);       
+       drawPics();
+    })
+    }())
+      //清最开始的圆
+  function clearPics2(){
+    clearTimeout(time_set1);  
+    var canvas = document.getElementById("demo");
+    var context = canvas.getContext("2d");     
+     context.clearRect(0,0,600,600);
+     /*drawPath(r_length,r_length,r_length+len_X,r_length-len_X,'source-over','#F00000');*/
+  } 
+  //画半径 
+  function drawPath(A,B,C,D,F){//beginPath() moveTo lineTo stroke endPath
+    var canvas = document.getElementById("demo");
+    var context = canvas.getContext("2d");  
+    /*context.globalCompositeOperation = E;*/
+    context.beginPath();
+    context.strokeStyle = F;
+    context.moveTo(A, B);   
+    context.lineTo(C, D);   
+    context.stroke();
+    context.closePath();  
+
+  }
+  //画图，添加事件
+  function drawPics(){
+    var canvas = document.getElementById("demo");
+    var context = canvas.getContext("2d");       
+    canvas.addEventListener('touchstart', touchstart,false);
+    canvas.addEventListener('touchmove', touchmove,false);
+    canvas.addEventListener('touchend', touchend,false);    
+  } 
+  //触摸开始
+  function touchstart(event){
+    event.preventDefault();   
+    if (!event.touches.length) return;
+    var touch = event.touches[0];
+    startX = touch.pageX;
+    startY = touch.pageY; 
+  }
+  //触摸进行中
+  function touchmove(event){
+    var canvas = document.getElementById("demo");
+  var context = canvas.getContext("2d");  
+    event.preventDefault();   
+    var touch = event.touches[0],
+    x = touch.pageX ,
+    y = touch.pageY ;
+    context.beginPath();
+    context.moveTo(startX, startY);   
+    context.lineTo(x, y);
+    context.strokeStyle = '#000000';
+    context.stroke();
+    context.fillStyle = 'white';
+    context.fill();
+    context.closePath();
+    startX = x;
+    startY = y;
+  }
+
+function touchend(){
+    event.preventDefault();   
+    var canvas = document.getElementById("demo");
+    var context = canvas.getContext("2d");  
+  
+    //context.save();
+    /*context.clearRect(r_length-len_X,r_length-len_X,r_length+len_X,r_length+len_X);*/
+    //context.globalCompositeOperation = "source-atop";
+    /*context.beginPath();  
+    context.strokeStyle = "#ff0000";
+    context.arc(r_length,r_length,r_length,0,2*Math.PI);
+    context.stroke();
+    context.closePath();*/
+    /*drawArc_first('#ff0000');*/
+    //比较面积
+    compareArea();
+    //setTimeout(compareArea,10);
+    
+  }
+
+function compareArea(){
+  var x1,y1;
+  var canvas = document.getElementById("demo");
+  var context = canvas.getContext("2d");  
+  context.globalCompositeOperation = 'lighter';
+  for(var i =45;i<405;i+=5){
+    x1 = r_length + r_length * Math.cos(i * Math.PI /180);
+      y1 = r_length + r_length * Math.sin(i * Math.PI /180);
+    drawPath(r_length,r_length,x1,y1,'blue');
+  }   
+}
+    </script>
+
+</body>
+  
+</html>
